@@ -2,9 +2,19 @@ package br.gov.go.cursomc.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+
+@Entity
 public class Categoria implements Serializable{
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@GeneratedValue(generator="categoria_seq", strategy=GenerationType.SEQUENCE)
+	@SequenceGenerator(name="categoria_seq", sequenceName="categoria_seq", allocationSize=1, initialValue=1)
 	private Integer id;
 	
 	private String nome;
