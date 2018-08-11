@@ -16,7 +16,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -32,7 +31,7 @@ public class Produto implements Serializable{
 	
 	private double preco;
 	
-	@JsonBackReference
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name="produto_categoria", joinColumns = @JoinColumn(name="produto_id"), 
 		inverseJoinColumns= @JoinColumn(name="categoria_id")
