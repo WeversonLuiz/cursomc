@@ -14,6 +14,7 @@ import br.gov.go.cursomc.domain.Cidade;
 import br.gov.go.cursomc.domain.Cliente;
 import br.gov.go.cursomc.domain.Endereco;
 import br.gov.go.cursomc.domain.Estado;
+import br.gov.go.cursomc.domain.ItemPedido;
 import br.gov.go.cursomc.domain.PagaementoComBoleto;
 import br.gov.go.cursomc.domain.Pagamento;
 import br.gov.go.cursomc.domain.PagamentoComCartao;
@@ -26,6 +27,7 @@ import br.gov.go.cursomc.repositories.CidadeRepository;
 import br.gov.go.cursomc.repositories.ClienteRepository;
 import br.gov.go.cursomc.repositories.EnderecoRepository;
 import br.gov.go.cursomc.repositories.EstadoRepository;
+import br.gov.go.cursomc.repositories.ItemPedidoRepository;
 import br.gov.go.cursomc.repositories.PagamentoRepository;
 import br.gov.go.cursomc.repositories.PedidoRepository;
 import br.gov.go.cursomc.repositories.ProdutoRepository;
@@ -40,16 +42,16 @@ public class CursomcApplication {
 	@Bean
 	CommandLineRunner init(CategoriaRepository categoriaRepository, ProdutoRepository produtoRepository,
 			CidadeRepository cidadeRepository, EstadoRepository estadoRepository, ClienteRepository clienteRepository, EnderecoRepository enderecoRepository,
-			PedidoRepository pedidoRepository, PagamentoRepository pagamentoRepository){
+			PedidoRepository pedidoRepository, PagamentoRepository pagamentoRepository, ItemPedidoRepository itemPedidoRepository){
 		return args -> {
 			initCategorias(categoriaRepository, produtoRepository, cidadeRepository, estadoRepository, clienteRepository, enderecoRepository,
-						pedidoRepository, pagamentoRepository);
+						pedidoRepository, pagamentoRepository, itemPedidoRepository);
 		};
 	}
 	
 	private void initCategorias(CategoriaRepository categoriaRepository, ProdutoRepository produtoRepository,
 			CidadeRepository cidadeRepository, EstadoRepository estadoRepository, ClienteRepository clienteRepository, EnderecoRepository enderecoRepository,
-			PedidoRepository pedidoRepository, PagamentoRepository pagamentoRepository) throws ParseException{
+			PedidoRepository pedidoRepository, PagamentoRepository pagamentoRepository, ItemPedidoRepository itemPedidoRepository) throws ParseException{
 		Categoria cat1 = new Categoria(null, "Informática");
 		Categoria cat2 = new Categoria(null, "Escritório");
 		Categoria cat3 = new Categoria(null, "Eletrônicos");
@@ -114,5 +116,18 @@ public class CursomcApplication {
 		
 		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
 		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
+		
+		ItemPedido ip1 = new ItemPedido(ped1, p1, 0.00, 1, 2000.00);
+		ItemPedido ip2 = new ItemPedido(ped1, p3, 0.00, 2, 80.00);
+		ItemPedido ip3 = new ItemPedido(ped2, p2, 100.00, 1, 800.00);
+		
+		ped1.getItens().addAll(Arrays.asList(ip1, ip2));
+		ped2.getItens().addAll(Arrays.asList(ip3));
+		
+		p1.getItens().addAll(Arrays.asList(ip1));
+		p2.getItens().addAll(Arrays.asList(ip3));
+		p3.getItens().addAll(Arrays.asList(ip2));
+		
+		itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
 	}
 }
