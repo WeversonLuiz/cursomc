@@ -18,8 +18,8 @@ public class ClienteReosource {
 	private ClienteService clienteService;
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ResponseEntity<?> find(@PathVariable Integer id){
-		Cliente cliente = this.clienteService.buscar(id);
+	public ResponseEntity<Cliente> find(@PathVariable Integer id){
+		Cliente cliente = this.clienteService.find(id);
 		return ResponseEntity.ok().body(cliente);
 	}
 
