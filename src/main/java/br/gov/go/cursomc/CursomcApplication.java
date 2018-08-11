@@ -1,5 +1,7 @@
 package br.gov.go.cursomc;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.boot.CommandLineRunner;
@@ -12,13 +14,20 @@ import br.gov.go.cursomc.domain.Cidade;
 import br.gov.go.cursomc.domain.Cliente;
 import br.gov.go.cursomc.domain.Endereco;
 import br.gov.go.cursomc.domain.Estado;
+import br.gov.go.cursomc.domain.PagaementoComBoleto;
+import br.gov.go.cursomc.domain.Pagamento;
+import br.gov.go.cursomc.domain.PagamentoComCartao;
+import br.gov.go.cursomc.domain.Pedido;
 import br.gov.go.cursomc.domain.Produto;
+import br.gov.go.cursomc.domain.enums.EstadoPagamento;
 import br.gov.go.cursomc.domain.enums.TipoCliente;
 import br.gov.go.cursomc.repositories.CategoriaRepository;
 import br.gov.go.cursomc.repositories.CidadeRepository;
 import br.gov.go.cursomc.repositories.ClienteRepository;
 import br.gov.go.cursomc.repositories.EnderecoRepository;
 import br.gov.go.cursomc.repositories.EstadoRepository;
+import br.gov.go.cursomc.repositories.PagamentoRepository;
+import br.gov.go.cursomc.repositories.PedidoRepository;
 import br.gov.go.cursomc.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -30,14 +39,17 @@ public class CursomcApplication {
 	
 	@Bean
 	CommandLineRunner init(CategoriaRepository categoriaRepository, ProdutoRepository produtoRepository,
-			CidadeRepository cidadeRepository, EstadoRepository estadoRepository, ClienteRepository clienteRepository, EnderecoRepository enderecoRepository){
+			CidadeRepository cidadeRepository, EstadoRepository estadoRepository, ClienteRepository clienteRepository, EnderecoRepository enderecoRepository,
+			PedidoRepository pedidoRepository, PagamentoRepository pagamentoRepository){
 		return args -> {
-			initCategorias(categoriaRepository, produtoRepository, cidadeRepository, estadoRepository, clienteRepository, enderecoRepository);
+			initCategorias(categoriaRepository, produtoRepository, cidadeRepository, estadoRepository, clienteRepository, enderecoRepository,
+						pedidoRepository, pagamentoRepository);
 		};
 	}
 	
 	private void initCategorias(CategoriaRepository categoriaRepository, ProdutoRepository produtoRepository,
-			CidadeRepository cidadeRepository, EstadoRepository estadoRepository, ClienteRepository clienteRepository, EnderecoRepository enderecoRepository){
+			CidadeRepository cidadeRepository, EstadoRepository estadoRepository, ClienteRepository clienteRepository, EnderecoRepository enderecoRepository,
+			PedidoRepository pedidoRepository, PagamentoRepository pagamentoRepository) throws ParseException{
 		Categoria cat1 = new Categoria(null, "Informática");
 		Categoria cat2 = new Categoria(null, "Escritório");
 		Categoria cat3 = new Categoria(null, "Eletrônicos");
@@ -86,5 +98,21 @@ public class CursomcApplication {
 		
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(e1, e2));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, e2);
+		
+		Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pagto1);
+		
+		Pagamento pagto2 = new PagaementoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00: 00"), null);
+		ped2.setPagamento(pagto2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+		
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
 	}
 }
