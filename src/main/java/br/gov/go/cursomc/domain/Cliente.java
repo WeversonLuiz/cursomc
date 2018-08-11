@@ -15,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import br.gov.go.cursomc.domain.enums.TipoCliente;
 
 @Entity
@@ -32,6 +34,7 @@ public class Cliente implements Serializable{
 	
 	private String cpfOuCnpj;
 	
+	@JsonManagedReference
 	@OneToMany(mappedBy="cliente")
 	private List<Endereco> enderecos = new ArrayList<>();
 	
