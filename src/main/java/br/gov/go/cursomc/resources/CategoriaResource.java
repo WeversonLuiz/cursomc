@@ -1,6 +1,7 @@
 package br.gov.go.cursomc.resources;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,12 @@ public class CategoriaResource {
 	@Autowired
 	private CategoriaService categoriaService;
 	
+	@RequestMapping(value="/")
+	public ResponseEntity<List<Categoria>> findAll(){
+		List<Categoria> categorias = categoriaService.findAll();
+		return ResponseEntity.ok().body(categorias);
+	}
+	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public ResponseEntity<Categoria> find(@PathVariable Integer id){
 		Categoria categoria = categoriaService.find(id);
@@ -42,6 +49,13 @@ public class CategoriaResource {
 		obj.setId(id);
 		obj = categoriaService.update(obj);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable Integer id){
+		categoriaService.delete(id);
+		return ResponseEntity.noContent().build();
+		
 	}
 
 }
