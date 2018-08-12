@@ -20,8 +20,7 @@ public class CategoriaService {
 	
 
 	public List<Categoria> findAll() {
-		List<Categoria> categorias = categoriaRepository.findAll();
-		return categorias;
+		return categoriaRepository.findAll();
 	}
 	
 	public Categoria find(Integer id){

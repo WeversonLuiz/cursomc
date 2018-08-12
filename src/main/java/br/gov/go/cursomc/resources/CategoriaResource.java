@@ -2,6 +2,7 @@ package br.gov.go.cursomc.resources;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.gov.go.cursomc.domain.Categoria;
+import br.gov.go.cursomc.dto.CategoriaDTO;
 import br.gov.go.cursomc.services.CategoriaService;
 
 
@@ -23,10 +25,21 @@ public class CategoriaResource {
 	@Autowired
 	private CategoriaService categoriaService;
 	
-	@RequestMapping(value="/")
-	public ResponseEntity<List<Categoria>> findAll(){
-		List<Categoria> categorias = categoriaService.findAll();
-		return ResponseEntity.ok().body(categorias);
+	/*
+	 * ArrowFuncition anônima do java 8, utilizando o recurso stream para percurrer a lista
+	 * e o metodo .map para executar uma operação a cada iteração do for "stream().map"
+	 * ao final converto o stream para List novamente.
+	 */
+	@RequestMapping(method=RequestMethod.GET)
+	public ResponseEntity<List<CategoriaDTO>> findAll(){
+//		List<CategoriaDTO> listaDTO = new ArrayList<>();
+		List<Categoria> lista = categoriaService.findAll();
+//		for (Categoria categoria : lista) {
+//			CategoriaDTO categoriaDTO = new CategoriaDTO(categoria);
+//			listaDTO.add(categoriaDTO);
+//		}
+		List<CategoriaDTO> listaDTO = lista.stream().map(obj -> new CategoriaDTO(obj)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(listaDTO);
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
