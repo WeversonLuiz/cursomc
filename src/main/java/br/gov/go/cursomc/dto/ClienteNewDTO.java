@@ -2,18 +2,32 @@ package br.gov.go.cursomc.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
+import br.gov.go.cursomc.services.validation.ClienteInsert;
+
+@ClienteInsert
 public class ClienteNewDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 
+	@NotEmpty(message="O preenchimento do campo nome é obrigatório.")
+	@Length(min=5, max=80, message="O campo nome deve ter entre 5 e 80 caracteres.")
 	private String nome;
 
+	@NotEmpty(message="O preenchimento do campo Email é obrigatório.")
+	@Email(message="email inválido.")
 	private String email;
 
+	@NotEmpty(message="O preenchimento do campo CPF/CNPJ é obrigatório.")
 	private String cpfOuCnpj;
 
-	
+	@NotEmpty(message="O preenchimento do campo Logradouro é obrigatório.")
 	private String logradouro;
 
+	@NotEmpty(message="O preenchimento do campo Número é obrigatório.")
 	private String numero;
 
 	private String complemento;
@@ -22,17 +36,18 @@ public class ClienteNewDTO implements Serializable{
 	
 	private Integer tipo;
 	
-	
+	@NotEmpty(message="O preenchimento do campo Telefone 1 é obrigatório.")
 	private String telefone1;
 	
 	private String telefone2;
 	
 	private String telefone3;
 	
-	
 	private Integer cidadeId;
 
+	@NotEmpty(message="O preenchimento do campo CEP é obrigatório.")
 	private String cep;
+	
 
 	public ClienteNewDTO() {}
 
