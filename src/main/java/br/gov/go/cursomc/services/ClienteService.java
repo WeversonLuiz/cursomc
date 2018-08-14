@@ -17,7 +17,6 @@ import br.gov.go.cursomc.domain.Endereco;
 import br.gov.go.cursomc.domain.enums.TipoCliente;
 import br.gov.go.cursomc.dto.ClienteDTO;
 import br.gov.go.cursomc.dto.ClienteNewDTO;
-import br.gov.go.cursomc.repositories.CidadeRepository;
 import br.gov.go.cursomc.repositories.ClienteRepository;
 import br.gov.go.cursomc.repositories.EnderecoRepository;
 import br.gov.go.cursomc.services.Exceptions.DataIntegrityException;
@@ -28,9 +27,6 @@ public class ClienteService {
 	
 	@Autowired
 	private ClienteRepository clienteRepository;;
-	
-	@Autowired
-	private CidadeRepository cidadeRepository;
 	
 	@Autowired
 	private EnderecoRepository enderecoRepository;
@@ -75,7 +71,7 @@ public class ClienteService {
 		try {
 			clienteRepository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possível excluir um Cliente, pois existe entidades relacionadas. ");
+			throw new DataIntegrityException("Não é possível excluir um Cliente, pois existe pedidos relacionadas. ");
 		}
 	}
 	
