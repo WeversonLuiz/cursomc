@@ -40,7 +40,7 @@ public class PedidoService {
 	private ProdutoService produtoService;
 	
 	@Autowired
-	private ClienteService clienteService;
+	private EmailService emailService;
 	
 	
 	public Pedido find(Integer id){
@@ -70,7 +70,7 @@ public class PedidoService {
 			item.setPedido(obj);
 		}
 		ItemPedidoRepository.saveAll(obj.getItens());
-		System.out.println(obj);
+		emailService.sendOrderConfirmationEmail(obj);
 		return obj;
 		
 	}
