@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title th:remove="all">Order Confirmation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!-- Theme style -->
+ <style type="text/css">
+ 	header {
+	    padding: 20px;
+	    text-align: center;
+	    font-size: 16px;
+	    color: #000;
+	}
+	.card-header {
+		  padding: 0.75rem 1.25rem;
+		  margin-bottom: 0;
+		  background-color: rgba(0, 0, 0, 0.03);
+		  border-bottom: 0 solid rgba(0, 0, 0, 0.125);
+		}
+		
+		.card-header:first-child {
+		  border-radius: calc(0.25rem - 0) calc(0.25rem - 0) 0 0;
+		}
+		
+		.card-header + .list-group .list-group-item:first-child {
+		  border-top: 0;
+		}
+ 	table {
+	    font-family: arial, sans-serif;
+	    border-collapse: collapse;
+	    width: 100%;
+	}
+	
+	td, th {
+	    border: 1px solid #dddddd;
+	    text-align: left;
+	    padding: 8px;
+	}
+	
+	tr:nth-child(even) {
+	    background-color: #dddddd;
+	}
+	.profile-user-img {
+	  margin: 0 auto;
+	  width: 100px;
+	  padding: 3px;
+	  border: 3px solid #adb5bd;
+	}
+	
+	.profile-username {
+	  font-size: 21px;
+	  margin-top: 5px;
+	}
+	.img-circle {
+	  border-radius: 50%;
+	}
+	
+	@media (max-width: 600px) {
+	    nav, article {
+	        width: 100%;
+	        height: auto;
+	    }
+	}	
+ </style>
+</head>
+<body th:style="'background-image: url('+ |cid:${background}| +')'">
+   	<header>
+   		<div class="text-center">
+   			<img  class="profile-user-img img-fluid img-circle" th:src="|cid:${logo}|"
+   				alt="logo_loja"/>
+   		</div>
+      	<div class="text-center">
+        	<h3 class="profile-username text-center">Detalhes do pedido</h3>
+      	</div>
+    </header>
+     
+    <div class="card-header">
+        <h1>
+		    Nº: <span style="color:Tomato;" class="text-success" th:text="${pedido.id}"> </span>
+	    </h1>
+    </div>
+    <div class="card-header">
+	    <p>
+		    Data: <span th:text="${#dates.format(pedido.instante, 'dd/MM/yyyy hh:mm')}"></span>
+	    </p>
+	    <p>
+		    Cliente: <span th:text="${pedido.cliente.nome}"></span>
+	    </p>
+	    <p>
+		    Situação do pagamento: <span th:text="${pedido.pagamento.estado.descricao}"></span>
+	    </p>
+    </div>
+
+     <!-- /.card-header -->
+     <div>
+       <table>
+         <tr>
+	    <th>Produto</th>
+	    <th>Quantidade</th>
+	    <th>Preço unit.</th>
+	    <th>Subtotal</th>
+      </tr>
+         <tr th:each="item : ${pedido.itens}">
+	    <td th:text="${item.produto.nome}">nome</td>
+	    <td th:text="${item.quantidade}">quantidade</td>
+	    <td th:text="${#numbers.formatDecimal(item.preco, 0, 'POINT', 2, 'COMMA')}">preco</td>
+	    <td style="color:DodgerBlue;" th:text="${#numbers.formatDecimal(item.subTotal, 0, 'POINT', 2, 'COMMA')}">subTotal</td>
+      </tr>
+       </table>
+       <div class="card-header">
+        <p>
+	    	Valor total: <span style="color:MediumSeaGreen;" th:text="${#numbers.formatDecimal(pedido.valorTotal, 0, 'POINT', 2, 'COMMA')}"></span>
+	    </p>
+       </div>
+     </div>
+</body>
+</html>
