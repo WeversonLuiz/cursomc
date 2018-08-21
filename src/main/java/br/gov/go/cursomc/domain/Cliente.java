@@ -49,16 +49,19 @@ public class Cliente implements Serializable{
 	private List<Pedido> pedidos = new ArrayList<>();
 	
 	private Integer tipo;
+	
+	private String senha;
 
 	public Cliente() {}
 
-	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipoCliente) {
+	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipoCliente, String senha) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
 		this.cpfOuCnpj = cpfOuCnpj;
 		this.tipo = (tipoCliente == null) ? null : tipoCliente.getCodigo();
+		this.senha = senha;
 	}
 
 	public Integer getId() {
@@ -111,6 +114,23 @@ public class Cliente implements Serializable{
 
 	public List<Pedido> getPedidos() {
 		return pedidos;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
+	public Integer getTipo() {
+		return tipo;
+	}
+	
+
+	public void setTipo(Integer tipo) {
+		this.tipo = tipo;
 	}
 
 	@Override

@@ -1,18 +1,22 @@
 package br.gov.go.cursomc.services;
 
+import java.io.File;
+import java.net.URL;
+import java.nio.file.Files;
 import java.util.Date;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -76,9 +80,11 @@ public abstract class AbstractEmailService implements EmailService{
 		mmh.setTo(obj.getCliente().getEmail());
 		mmh.setFrom(sender);
 		//mmh.addInline("background", new ClassPathResource("static/images/email/background_email.png"));
-		mmh.addInline("logo", new ClassPathResource("static/images/email/shop.png"), "image/png");
+		//mmh.addInline("logo", new ClassPathResource("static/images/email/shop.png"), "image/png");
+		ClassPathResource classPathResource = new ClassPathResource("static/images/email/shop.png");
+		mmh.addInline("logo", classPathResource);
 		
-		mmh.addAttachment("logo", new ClassPathResource("static/images/email/shop.png"), "image/png");
+		//mmh.addAttachment("logo", new ClassPathResource("static/images/email/shop.png"), "image/png");
 		mmh.setSubject("Pedido confirmado! Código: " + obj.getId());
 		mmh.setSentDate(new Date(System.currentTimeMillis()));
 		mmh.setText(htmlFromTemplatePedido(obj), true);

@@ -36,6 +36,9 @@ public class ClienteNewDTO implements Serializable{
 	
 	private Integer tipo;
 	
+	@NotEmpty(message="O preenchimento do campo Senha é obrigatório.")
+	private String senha;
+	
 	@NotEmpty(message="O preenchimento do campo Telefone 1 é obrigatório.")
 	private String telefone1;
 	
@@ -153,6 +156,14 @@ public class ClienteNewDTO implements Serializable{
 
 	public void setCep(String cep) {
 		this.cep = cep;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 	
 }
