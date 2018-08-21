@@ -7,9 +7,11 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -21,11 +23,11 @@ public abstract class AbstractEmailService implements EmailService{
 	@Autowired
 	private TemplateEngine templateEngine;
 	
-	@Value("${default.sender}")
-	private String sender;
-	
 	@Autowired
 	private JavaMailSender javaMailSender;
+	
+	@Value("${default.sender}")
+	private String sender;
 	
 	@Override
 	public void sendOrderConfirmationEmail(Pedido obj) {
@@ -82,5 +84,6 @@ public abstract class AbstractEmailService implements EmailService{
 		mmh.setText(htmlFromTemplatePedido(obj), true);
 		return mimeMessage;
 	}
+	
 
 }
