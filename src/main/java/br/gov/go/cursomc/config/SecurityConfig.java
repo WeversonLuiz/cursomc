@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import br.gov.go.cursomc.security.JWTAuthenticationFilter;
+import br.gov.go.cursomc.security.JWTAuthorizationFilter;
 import br.gov.go.cursomc.security.JWTUtil;
 
 @Configuration
@@ -44,22 +45,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			"/clientes/**"
 	};
 	
+	
 	@Override
-	public void configure(HttpSecurity http) throws Exception{
+	protected void configure(HttpSecurity http) throws Exception {
+		
+		//liberar o acesso ao banco de dados h2 no profile de teste
 		if (Arrays.asList(env.getActiveProfiles()).contains("teste")) {
-			//liberar o acesso ao banco de dados h2 no profile de teste
-			http.headers().frameOptions().disable();
-		}
+            http.headers().frameOptions().disable();
+        }
 		
 		http.cors().and().csrf().disable();
 		http.authorizeRequests()
-		.antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
-		.antMatchers(PUBLIC_MATCHERS).permitAll()
-		.anyRequest().authenticated();
+			.antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
+			.antMatchers(PUBLIC_MATCHERS).permitAll()
+			.anyRequest().authenticated();
+		// And filter other requests to check the presence of JWT in header
 		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
+		http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
 		//Assegura que o nosso backend não vai criar sessão de usuário
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-	}
+}
 	
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception{
