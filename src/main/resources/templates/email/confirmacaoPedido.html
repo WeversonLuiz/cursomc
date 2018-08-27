@@ -75,9 +75,9 @@
     </header>
      
     <div class="card-header">
-        <h1>
-		    Nº: <span style="color:Tomato;" class="text-success" th:text="${pedido.id}"> </span>
-	    </h1>
+        <h2>
+		    N&uacute;mero: <span style="color:Tomato;" class="text-success" th:text="${pedido.id}"> </span>
+	    </h2>
     </div>
     <div class="card-header">
 	    <p>
@@ -87,7 +87,7 @@
 		    Cliente: <span th:text="${pedido.cliente.nome}"></span>
 	    </p>
 	    <p>
-		    Situação do pagamento: <span th:text="${pedido.pagamento.estado.descricao}"></span>
+		    Situa&ccedil;&atilde;o do pagamento: <span th:text="${pedido.pagamento.estado.descricao}"></span>
 	    </p>
     </div>
 
@@ -97,7 +97,7 @@
          <tr>
 	    <th>Produto</th>
 	    <th>Quantidade</th>
-	    <th>Preço unit.</th>
+	    <th>Valor unit.</th>
 	    <th>Subtotal</th>
       </tr>
          <tr th:each="item : ${pedido.itens}">
