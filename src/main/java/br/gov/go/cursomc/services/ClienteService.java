@@ -1,5 +1,6 @@
 package br.gov.go.cursomc.services;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.gov.go.cursomc.domain.Cidade;
 import br.gov.go.cursomc.domain.Cliente;
@@ -28,26 +30,29 @@ import br.gov.go.cursomc.services.Exceptions.ObjectNotFoundException;
 
 @Service
 public class ClienteService {
-	
+
 	@Autowired
 	private ClienteRepository clienteRepository;;
-	
+
 	@Autowired
 	private EnderecoRepository enderecoRepository;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
-	
+	@Autowired
+	private S3Service s3service;
+
+
 	public List<Cliente> findAll() {
 		return clienteRepository.findAll();
 	}
-	
+
 	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String direction, String orderBy){
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		return clienteRepository.findAll(pageRequest);
 	}
-	
+
 	public Cliente find(Integer id){
 		UserSS user = UserService.UsuarioAutenticado();
 		if (user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
@@ -57,7 +62,7 @@ public class ClienteService {
 		return cliente.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id:"+ id + ", Cliente: " + Cliente.class.getName())); 
 	}
-	
+
 	@Transactional
 	public Cliente insert(Cliente obj){
 		obj.setId(null);
@@ -65,16 +70,11 @@ public class ClienteService {
 		enderecoRepository.saveAll(obj.getEnderecos());
 		return obj;
 	}
-	
+
 	public Cliente update(Cliente obj){
 		Cliente newObj = find(obj.getId());
 		updateData(newObj, obj);
 		return clienteRepository.save(newObj);
-	}
-
-	private void updateData(Cliente newObj, Cliente obj) {
-		newObj.setNome(obj.getNome());
-		newObj.setEmail(obj.getEmail());
 	}
 
 	public void delete(Integer id) {
@@ -85,11 +85,11 @@ public class ClienteService {
 			throw new DataIntegrityException("Não é possível excluir um Cliente, pois existe pedidos relacionadas. ");
 		}
 	}
-	
+
 	public Cliente fromDTO(ClienteDTO objDto){
 		return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null, null);
 	}
-	
+
 	public Cliente fromDTO(ClienteNewDTO objDto){
 		Cliente cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(), TipoCliente.toEnum(objDto.getTipo()), bCryptPasswordEncoder.encode(objDto.getSenha()));
 		Cidade cid = new Cidade(objDto.getCidadeId(), null, null);
@@ -105,4 +105,13 @@ public class ClienteService {
 		return cli;
 	}
 	
+	private void updateData(Cliente newObj, Cliente obj) {
+		newObj.setNome(obj.getNome());
+		newObj.setEmail(obj.getEmail());
+	}
+	
+	public URI uploadProfilePicture(MultipartFile multipartFile){
+		return s3service.uploadFile(multipartFile);
+	}
+
 }
